@@ -28,6 +28,8 @@ brv32_mcu/
 │   └── gen_firmware.py      # Python assembler script
 └── doc/
     └── BRV32_Design_Report.docx
+    └── BRV32_Design_Report.md
+    └── BRV32_Design_Report.pdf
 ```
 
 ## Running the SystemVerilog Testbench
