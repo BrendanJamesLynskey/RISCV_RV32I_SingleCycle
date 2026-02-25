@@ -60,7 +60,7 @@ module dmem #(
   always_ff @(posedge clk or negedge rst_n) begin
     if (!rst_n) begin
       for (int i = 0; i < DEPTH*4; i++)
-        mem[i] <= 8'h00;
+        mem[i] = 8'h00;
     end else if (wr_en) begin
       case (width)
         MEM_BYTE: begin

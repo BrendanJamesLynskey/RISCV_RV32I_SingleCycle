@@ -147,7 +147,7 @@ module decoder (
           3'b010: alu_op = ALU_SLT;                                        // SLTI
           3'b011: alu_op = ALU_SLTU;                                       // SLTIU
           3'b100: alu_op = ALU_XOR;                                        // XORI
-          3'b101: alu_op = funct7[5] ? ALU_SRA : ALU_SRL;                  // SRAI / SRLI
+          3'b101: alu_op = alu_op_e'(funct7[5] ? ALU_SRA : ALU_SRL);       // SRAI / SRLI
           3'b110: alu_op = ALU_OR;                                         // ORI
           3'b111: alu_op = ALU_AND;                                        // ANDI
         endcase
@@ -156,12 +156,12 @@ module decoder (
       OP_REG: begin
         reg_wr_en = 1'b1;
         case (funct3)
-          3'b000: alu_op = funct7[5] ? ALU_SUB : ALU_ADD;                  // SUB / ADD
+          3'b000: alu_op = alu_op_e'(funct7[5] ? ALU_SUB : ALU_ADD);       // SUB / ADD
           3'b001: alu_op = ALU_SLL;
           3'b010: alu_op = ALU_SLT;
           3'b011: alu_op = ALU_SLTU;
           3'b100: alu_op = ALU_XOR;
-          3'b101: alu_op = funct7[5] ? ALU_SRA : ALU_SRL;
+          3'b101: alu_op = alu_op_e'(funct7[5] ? ALU_SRA : ALU_SRL);
           3'b110: alu_op = ALU_OR;
           3'b111: alu_op = ALU_AND;
         endcase
