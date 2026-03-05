@@ -6,20 +6,20 @@ A single-cycle RV32I microcontroller SoC with GPIO, UART, and Timer peripherals.
 ```
 brv32_mcu/
 ├── rtl/                    # SystemVerilog RTL source files
-│   ├── riscv_pkg.sv        # Shared package (opcodes, types, memory map)
-│   ├── alu.sv              # 32-bit ALU
-│   ├── regfile.sv          # 32x32 Register File
-│   ├── decoder.sv          # Instruction Decoder
-│   ├── imem.sv             # Instruction Memory (ROM)
-│   ├── dmem.sv             # Data Memory (SRAM)
-│   ├── csr.sv              # Control/Status Registers
-│   ├── gpio.sv             # GPIO Peripheral
-│   ├── uart.sv             # UART Peripheral (8N1)
-│   ├── timer.sv            # Timer/Counter Peripheral
-│   ├── brv32_core.sv       # CPU Core
-│   └── brv32_mcu.sv        # SoC Top-Level
+│   ├── brv32_defines.vh    # Shared defines (opcodes, ALU ops, CSR addresses)
+│   ├── alu.v              # 32-bit ALU
+│   ├── regfile.v          # 32x32 Register File
+│   ├── decoder.v          # Instruction Decoder
+│   ├── imem.v             # Instruction Memory (ROM)
+│   ├── dmem.v             # Data Memory (SRAM)
+│   ├── csr.v              # Control/Status Registers
+│   ├── gpio.v             # GPIO Peripheral
+│   ├── uart.v             # UART Peripheral (8N1)
+│   ├── timer.v            # Timer/Counter Peripheral
+│   ├── brv32_core.v       # CPU Core
+│   └── brv32_mcu.v        # SoC Top-Level
 ├── tb/                     # SystemVerilog Testbench
-│   └── tb_brv32_mcu.sv
+│   └── tb_brv32_mcu.v
 ├── cocotb/                 # CocoTB Python Testbench
 │   ├── test_brv32_mcu.py
 │   └── Makefile
@@ -32,17 +32,24 @@ brv32_mcu/
     └── BRV32_Design_Report.pdf
 ```
 
-## Running the SystemVerilog Testbench
+## Running the Testbench
+
+Tested with **Icarus Verilog v10** (Ubuntu 18.04 default) and v12.
+
 ```bash
 cd tb
-# With Icarus Verilog:
-iverilog -g2012 -o sim ../rtl/riscv_pkg.sv ../rtl/alu.sv ../rtl/regfile.sv \
-  ../rtl/decoder.sv ../rtl/imem.sv ../rtl/dmem.sv ../rtl/gpio.sv \
-  ../rtl/uart.sv ../rtl/timer.sv ../rtl/csr.sv ../rtl/brv32_core.sv \
-  ../rtl/brv32_mcu.sv tb_brv32_mcu.sv
-cp ../firmware/firmware.hex .
-vvp sim +VCD    # Optional: +TRACE for instruction trace
+iverilog -g2012 -I../rtl -o sim \
+  ../rtl/alu.v ../rtl/regfile.v ../rtl/decoder.v \
+  ../rtl/imem.v ../rtl/dmem.v ../rtl/gpio.v \
+  ../rtl/uart.v ../rtl/timer.v ../rtl/csr.v \
+  ../rtl/brv32_core.v ../rtl/brv32_mcu.v \
+  tb_brv32_mcu.v
+vvp sim
 ```
+
+> **Note:** `-g2012` is required for the SV testbench. The RTL itself uses
+> only Verilog-2001 constructs (`reg`/`wire`, `always @(*)`, `always @(posedge clk)`).
+> The include path `-I../rtl` resolves `brv32_defines.vh`.
 
 ## Running the CocoTB Testbench
 ```bash
